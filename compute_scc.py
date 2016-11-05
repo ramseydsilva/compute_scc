@@ -6,27 +6,15 @@ class Node:
         return "Node: %s" %(self.id)
 
     def __init__(self, graph, id):
-        self.leader = None
         self.seen = False
         self.id = id
         graph.nodes[id] = self
         self.incoming = []
         self.outgoing = []
-        super(Node, self).__init__()
 
     @staticmethod
     def get_or_create(graph, id):
         return graph.nodes[id] if id in graph.nodes else Node(graph, id)
-
-    def add_outgoing(self, edge):
-        self.outgoing.append(edge)
-
-    def add_incoming(self, edge):
-        self.incoming.append(edge)
-
-    @property
-    def children(self):
-        return [o.head for o in self.outgoing]
 
     @property
     def next(self):
@@ -43,9 +31,8 @@ class Edge:
     def __init__(self, graph, head, tail):
         self.head = Node.get_or_create(graph, head)
         self.tail = Node.get_or_create(graph, tail)
-        super(Edge, self).__init__()
-        self.head.add_incoming(self)
-        self.tail.add_outgoing(self)
+        self.head.incoming.append(self)
+        self.tail.outgoing.append(self)
 
 class Graph:
 
@@ -55,18 +42,16 @@ class Graph:
     def __init__(self):
         self.edges = []
         self.nodes = {}
-        super(Graph, self).__init__()
 
     def reverse(self):
         Grev = Graph()
         for edge in self.edges:
-            edge_rev = Edge(Grev, edge.tail.id, edge.head.id)
-            Grev.edges.append(edge_rev)
+            edge_reversed = Edge(Grev, edge.tail.id, edge.head.id)
+            Grev.edges.append(edge_reversed)
         return Grev
 
     def reset(self):
-        for id, node in self.nodes.items():
-            node.seen = False
+        for id, node in self.nodes.items(): node.seen = False
 
 G = Graph()
 with open('SCC.txt', 'r') as f:
@@ -80,7 +65,6 @@ with open('SCC.txt', 'r') as f:
 
 Grev = G.reverse()
 finishing_times = []
-scc_size = 0
 scc_sizes = []
 
 print('First DFS')
