@@ -1,5 +1,5 @@
-# Code to Connect Strongly Connected Components of Directed Acyclic Graph
+# Output SCC sizes of Directed Acyclic Graphs
 
-To compute SCCs, run:
+To output sizes of SCC, run:
 
     python compute_scc.py
